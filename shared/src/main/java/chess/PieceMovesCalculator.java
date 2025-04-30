@@ -1,9 +1,38 @@
 package chess;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 public abstract class PieceMovesCalculator {
+
+    public abstract Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
 
     public boolean inBounds(ChessPosition thisPosition) {
         return (thisPosition.getRow() > 0 && thisPosition.getColumn() > 0
                 && thisPosition.getRow() < 9 && thisPosition.getColumn() < 8);
+    }
+
+    public boolean isOpposingPiece(ChessBoard board, ChessPosition myPosition, ChessPosition foundPosition) {
+        return (board.getPiece(foundPosition).getTeamColor() != board.getPiece(foundPosition).getTeamColor());
+    }
+
+    public boolean foundPiece(ChessBoard board, ChessPosition foundPosition) {
+        return board.getPiece(foundPosition) != null;
+    }
+
+    public Collection<ChessMove> addAllMoves(ChessBoard board, ChessPosition myPosition, int moveV, int moveH, boolean repeat) {
+        Collection<ChessMove> allMoves = new HashSet<>();
+        int iter = 1;
+        do {
+            ChessPosition curPosition = new ChessPosition(myPosition.getRow() + moveV * iter, myPosition.getColumn() + moveH * iter);
+            if (this.inBounds(curPosition) || this.foundPiece(board, curPosition)) {
+                if (this.isOpposingPiece(board, myPosition, curPosition)) {
+                    allMoves.add(new ChessMove(myPosition, curPosition, null));
+                }
+                break;
+            }
+            allMoves.add(new ChessMove(myPosition, curPosition, null));
+        } while (repeat);
+        return allMoves;
     }
 }
