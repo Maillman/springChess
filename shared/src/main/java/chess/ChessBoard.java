@@ -42,7 +42,33 @@ public class ChessBoard {
      * normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        ChessGame.TeamColor curColor;
+        for (int i = 1; i <= 8; i++) {
+            if (i == 1 || i == 8) {
+                if (i == 1) {
+                    curColor = ChessGame.TeamColor.WHITE;
+                } else {
+                    curColor = ChessGame.TeamColor.BLACK;
+                }
+                addPiece(new ChessPosition(i, 1), new ChessPiece(curColor, ChessPiece.PieceType.ROOK));
+                addPiece(new ChessPosition(i, 8), new ChessPiece(curColor, ChessPiece.PieceType.ROOK));
+                addPiece(new ChessPosition(i, 2), new ChessPiece(curColor, ChessPiece.PieceType.KNIGHT));
+                addPiece(new ChessPosition(i, 7), new ChessPiece(curColor, ChessPiece.PieceType.KNIGHT));
+                addPiece(new ChessPosition(i, 3), new ChessPiece(curColor, ChessPiece.PieceType.BISHOP));
+                addPiece(new ChessPosition(i, 6), new ChessPiece(curColor, ChessPiece.PieceType.BISHOP));
+                addPiece(new ChessPosition(i, 4), new ChessPiece(curColor, ChessPiece.PieceType.QUEEN));
+                addPiece(new ChessPosition(i, 5), new ChessPiece(curColor, ChessPiece.PieceType.KING));
+            } else if (i == 2 || i == 7) {
+                if (i == 2) {
+                    curColor = ChessGame.TeamColor.WHITE;
+                } else {
+                    curColor = ChessGame.TeamColor.BLACK;
+                }
+                for (int j = 1; j <= 8; j++) {
+                    addPiece(new ChessPosition(i, j), new ChessPiece(curColor, ChessPiece.PieceType.PAWN));
+                }
+            }
+        }
     }
 
     @Override
@@ -65,5 +91,16 @@ public class ChessBoard {
         }
         final ChessBoard other = (ChessBoard) obj;
         return Arrays.deepEquals(this.board, other.board);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                sb.append(board[i][j]);
+            }
+        }
+        return sb.toString();
     }
 }

@@ -46,6 +46,16 @@ public class ChessPiece {
         return this.type == other.type;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ChessPiece{");
+        sb.append("pieceColor=").append(pieceColor);
+        sb.append(", type=").append(type);
+        sb.append('}');
+        return sb.toString();
+    }
+
     /**
      * The various different chess piece options
      */
