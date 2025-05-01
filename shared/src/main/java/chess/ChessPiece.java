@@ -82,7 +82,7 @@ public class ChessPiece {
         Collection<ChessMove> possibleMoves = new HashSet<>();
         switch (board.getPiece(myPosition).getPieceType()) {
             case BISHOP:
-                possibleMoves.addAll(new BishopMovesCalculator().pieceMoves(board, myPosition));
+                possibleMoves.addAll(new QueenMovesCalculator().pieceMoves(board, myPosition));
                 break;
             default:
                 throw new AssertionError();

@@ -79,9 +79,9 @@ public class ChessMove {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ChessMove{");
-        sb.append("startPosition=").append(startPosition);
-        sb.append(", endPosition=").append(endPosition);
-        sb.append(", promotionPiece=").append(promotionPiece);
+        sb.append("start=").append(startPosition);
+        sb.append(", end=").append(endPosition);
+        sb.append(", promote=").append(promotionPiece);
         sb.append('}');
         return sb.toString();
     }

@@ -59,10 +59,10 @@ public class ChessPosition {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("ChessPosition{");
-        sb.append("row=").append(row);
-        sb.append(", col=").append(col);
-        sb.append('}');
+        sb.append("(");
+        sb.append(row);
+        sb.append(",").append(col);
+        sb.append(')');
         return sb.toString();
     }
 }

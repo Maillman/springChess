@@ -9,11 +9,11 @@ public abstract class PieceMovesCalculator {
 
     public boolean inBounds(ChessPosition thisPosition) {
         return (thisPosition.getRow() > 0 && thisPosition.getColumn() > 0
-                && thisPosition.getRow() < 9 && thisPosition.getColumn() < 8);
+                && thisPosition.getRow() < 9 && thisPosition.getColumn() < 9);
     }
 
     public boolean isOpposingPiece(ChessBoard board, ChessPosition myPosition, ChessPosition foundPosition) {
-        return (board.getPiece(foundPosition).getTeamColor() != board.getPiece(foundPosition).getTeamColor());
+        return (board.getPiece(myPosition).getTeamColor() != board.getPiece(foundPosition).getTeamColor());
     }
 
     public boolean foundPiece(ChessBoard board, ChessPosition foundPosition) {
@@ -31,6 +31,7 @@ public abstract class PieceMovesCalculator {
             }
             if (this.foundPiece(board, curPosition)) {
                 if (this.isOpposingPiece(board, myPosition, curPosition)) {
+                    //System.out.println("found opposing piece");
                     allMoves.add(new ChessMove(myPosition, curPosition, null));
                 }
                 break;
