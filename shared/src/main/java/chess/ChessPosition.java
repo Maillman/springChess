@@ -55,4 +55,14 @@ public class ChessPosition {
         }
         return this.col == other.col;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ChessPosition{");
+        sb.append("row=").append(row);
+        sb.append(", col=").append(col);
+        sb.append('}');
+        return sb.toString();
+    }
 }

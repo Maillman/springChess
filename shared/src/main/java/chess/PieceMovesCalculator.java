@@ -25,13 +25,18 @@ public abstract class PieceMovesCalculator {
         int iter = 1;
         do {
             ChessPosition curPosition = new ChessPosition(myPosition.getRow() + moveV * iter, myPosition.getColumn() + moveH * iter);
-            if (this.inBounds(curPosition) || this.foundPiece(board, curPosition)) {
+            //System.out.println(curPosition);
+            if (!this.inBounds(curPosition)) {
+                break;
+            }
+            if (this.foundPiece(board, curPosition)) {
                 if (this.isOpposingPiece(board, myPosition, curPosition)) {
                     allMoves.add(new ChessMove(myPosition, curPosition, null));
                 }
                 break;
             }
             allMoves.add(new ChessMove(myPosition, curPosition, null));
+            iter++;
         } while (repeat);
         return allMoves;
     }
