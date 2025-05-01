@@ -81,6 +81,10 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> possibleMoves = new HashSet<>();
         switch (board.getPiece(myPosition).getPieceType()) {
+            case PAWN -> {
+                PawnMovesCalculator pawnMovesCalculator = new PawnMovesCalculator(board.getPiece(myPosition).getTeamColor());
+                possibleMoves.addAll(pawnMovesCalculator.pieceMoves(board, myPosition));
+            }
             case BISHOP ->
                 possibleMoves.addAll(new BishopMovesCalculator().pieceMoves(board, myPosition));
             case ROOK ->

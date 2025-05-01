@@ -20,13 +20,28 @@ public class PawnMovesCalculator extends PieceMovesCalculator {
         }
     }
 
+    public void checkAndAddPosition(Collection<ChessMove> allMoves, ChessBoard board, ChessPosition myPosition, ChessPosition checkPosition, int row) {
+        if (inBounds(checkPosition) && board.getPiece(checkPosition) == null) {
+            if (row == 9 - startRow) {
+                allMoves.add(new ChessMove(myPosition, checkPosition, ChessPiece.PieceType.QUEEN));
+                allMoves.add(new ChessMove(myPosition, checkPosition, ChessPiece.PieceType.ROOK));
+                allMoves.add(new ChessMove(myPosition, checkPosition, ChessPiece.PieceType.BISHOP));
+                allMoves.add(new ChessMove(myPosition, checkPosition, ChessPiece.PieceType.KNIGHT));
+            } else {
+                allMoves.add(new ChessMove(myPosition, checkPosition, null));
+            }
+        }
+    }
+
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> allMoves = new HashSet<>();
-        ChessPosition forwardPosition = new ChessPosition(myPosition.getRow() + forwardMove, myPosition.getColumn());
+        int row = myPosition.getRow();
+        int column = myPosition.getColumn();
+        ChessPosition forwardPosition = new ChessPosition(row + forwardMove, column);
         //Forward
         if (board.getPiece(forwardPosition) == null) {
-            if (myPosition.getRow() == 9 - startRow) {
+            if (row == 9 - startRow) {
                 allMoves.add(new ChessMove(myPosition, forwardPosition, ChessPiece.PieceType.QUEEN));
                 allMoves.add(new ChessMove(myPosition, forwardPosition, ChessPiece.PieceType.ROOK));
                 allMoves.add(new ChessMove(myPosition, forwardPosition, ChessPiece.PieceType.BISHOP));
@@ -34,14 +49,18 @@ public class PawnMovesCalculator extends PieceMovesCalculator {
             } else {
                 allMoves.add(new ChessMove(myPosition, forwardPosition, null));
             }
-            if (myPosition.getRow() == startRow) {
-                ChessPosition extraForwardPosition = new ChessPosition(myPosition.getRow() + forwardMove * 2, myPosition.getColumn());
+            if (row == startRow) {
+                ChessPosition extraForwardPosition = new ChessPosition(row + forwardMove * 2, column);
                 if (board.getPiece(extraForwardPosition) == null) {
                     allMoves.add(new ChessMove(myPosition, extraForwardPosition, null));
                 }
             }
         }
         //Capturing
+        ChessPosition forwardLeftPosition = new ChessPosition(row + forwardMove, column - 1);
+        checkAndAddPosition(allMoves, board, myPosition, forwardLeftPosition, row);
+        ChessPosition forwardRightPosition = new ChessPosition(row + forwardMove, column - 1);
+        checkAndAddPosition(allMoves, board, myPosition, forwardRightPosition, row);
         return allMoves;
     }
 
