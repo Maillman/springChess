@@ -23,7 +23,25 @@ public class PawnMovesCalculator extends PieceMovesCalculator {
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> allMoves = new HashSet<>();
-        //if()
+        ChessPosition forwardPosition = new ChessPosition(myPosition.getRow() + forwardMove, myPosition.getColumn());
+        //Forward
+        if (board.getPiece(forwardPosition) == null) {
+            if (myPosition.getRow() == 9 - startRow) {
+                allMoves.add(new ChessMove(myPosition, forwardPosition, ChessPiece.PieceType.QUEEN));
+                allMoves.add(new ChessMove(myPosition, forwardPosition, ChessPiece.PieceType.ROOK));
+                allMoves.add(new ChessMove(myPosition, forwardPosition, ChessPiece.PieceType.BISHOP));
+                allMoves.add(new ChessMove(myPosition, forwardPosition, ChessPiece.PieceType.KNIGHT));
+            } else {
+                allMoves.add(new ChessMove(myPosition, forwardPosition, null));
+            }
+            if (myPosition.getRow() == startRow) {
+                ChessPosition extraForwardPosition = new ChessPosition(myPosition.getRow() + forwardMove * 2, myPosition.getColumn());
+                if (board.getPiece(extraForwardPosition) == null) {
+                    allMoves.add(new ChessMove(myPosition, extraForwardPosition, null));
+                }
+            }
+        }
+        //Capturing
         return allMoves;
     }
 
