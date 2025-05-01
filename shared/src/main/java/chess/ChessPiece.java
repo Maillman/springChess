@@ -81,10 +81,17 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> possibleMoves = new HashSet<>();
         switch (board.getPiece(myPosition).getPieceType()) {
-            case BISHOP:
+            case BISHOP ->
+                possibleMoves.addAll(new BishopMovesCalculator().pieceMoves(board, myPosition));
+            case ROOK ->
+                possibleMoves.addAll(new RookMovesCalculator().pieceMoves(board, myPosition));
+            case QUEEN ->
                 possibleMoves.addAll(new QueenMovesCalculator().pieceMoves(board, myPosition));
-                break;
-            default:
+            case KNIGHT ->
+                possibleMoves.addAll(new KnightMovesCalculator().pieceMoves(board, myPosition));
+            case KING ->
+                possibleMoves.addAll(new KingMovesCalculator().pieceMoves(board, myPosition));
+            default ->
                 throw new AssertionError();
         }
         return possibleMoves;

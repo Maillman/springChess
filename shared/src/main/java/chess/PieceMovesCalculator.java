@@ -5,6 +5,12 @@ import java.util.HashSet;
 
 public abstract class PieceMovesCalculator {
 
+    public boolean repeat;
+
+    public PieceMovesCalculator(boolean repeat) {
+        this.repeat = repeat;
+    }
+
     public abstract Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
 
     public boolean inBounds(ChessPosition thisPosition) {
@@ -20,7 +26,7 @@ public abstract class PieceMovesCalculator {
         return board.getPiece(foundPosition) != null;
     }
 
-    public Collection<ChessMove> addAllMoves(ChessBoard board, ChessPosition myPosition, int moveV, int moveH, boolean repeat) {
+    public Collection<ChessMove> addAllMoves(ChessBoard board, ChessPosition myPosition, int moveV, int moveH) {
         Collection<ChessMove> allMoves = new HashSet<>();
         int iter = 1;
         do {
