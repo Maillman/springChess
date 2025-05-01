@@ -50,3 +50,7 @@ java -jar client/target/client-jar-with-dependencies.jar
 
 ♕ 240 Chess Client: chess.ChessPiece@7852e922
 ```
+
+## Time for 100+CodeQuality%:
+Phase # - hour:minute:second
+Phase 0 - 2:30:23
