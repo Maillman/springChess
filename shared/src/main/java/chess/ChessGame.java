@@ -58,11 +58,19 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (board.getPiece(startPosition) == null) {
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) {
             return new HashSet<>();
         }
-        TeamColor pieceColor = board.getPiece(startPosition).getTeamColor();
+        TeamColor pieceColor = piece.getTeamColor();
+        Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
         Collection<ChessMove> validMoves = new HashSet<>();
+        Collection validMovesForColor = allValidMovesForColor(pieceColor);
+        for (ChessMove move : possibleMoves) {
+            if (validMovesForColor.contains(move)) {
+                validMoves.add(move);
+            }
+        }
         return validMoves;
     }
 
@@ -73,11 +81,31 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece == null) {
+            throw new InvalidMoveException("No piece there");
+        }
+        TeamColor colorOfPiece = piece.getTeamColor();
+        if (colorOfPiece != this.teamTurn) {
+            throw new InvalidMoveException("Piece moved out of turn");
+        }
+        Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
+        if (!validMoves.contains(move)) {
+            throw new InvalidMoveException("Piece can't go there");
+        }
+        forceMoveWithoutTeamTurn(move);
+        switch (teamTurn) {
+            case WHITE:
+                this.teamTurn = TeamColor.BLACK;
+            case BLACK:
+                this.teamTurn = TeamColor.WHITE;
+            default:
+                this.teamTurn = TeamColor.WHITE;
+        }
     }
 
     public void forceMoveWithoutTeamTurn(ChessMove move) {
-        this.board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+        this.board.addPiece(move.getEndPosition(), this.board.getPiece(move.getStartPosition()));
         this.board.addPiece(move.getStartPosition(), null);
     }
 
