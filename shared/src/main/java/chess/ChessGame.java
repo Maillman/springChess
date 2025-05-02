@@ -97,15 +97,26 @@ public class ChessGame {
         switch (teamTurn) {
             case WHITE:
                 this.teamTurn = TeamColor.BLACK;
+                break;
             case BLACK:
                 this.teamTurn = TeamColor.WHITE;
+                break;
             default:
                 this.teamTurn = TeamColor.WHITE;
         }
     }
 
     public void forceMoveWithoutTeamTurn(ChessMove move) {
-        this.board.addPiece(move.getEndPosition(), this.board.getPiece(move.getStartPosition()));
+        ChessPiece piece = this.board.getPiece(move.getStartPosition());
+        if (piece == null) {
+            return;
+        }
+        if (move.getPromotionPiece() != null) {
+            ChessPiece newPiece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+            this.board.addPiece(move.getEndPosition(), newPiece);
+        } else {
+            this.board.addPiece(move.getEndPosition(), piece);
+        }
         this.board.addPiece(move.getStartPosition(), null);
     }
 
