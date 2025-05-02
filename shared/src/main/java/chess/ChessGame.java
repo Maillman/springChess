@@ -15,10 +15,19 @@ public class ChessGame {
 
     TeamColor teamTurn;
 
+    boolean WQCastle;
+    boolean WKCastle;
+    boolean BQCastle;
+    boolean BKCastle;
+
     public ChessGame() {
         this.board = new ChessBoard();
         this.board.resetBoard();
         this.teamTurn = TeamColor.WHITE;
+        WQCastle = true;
+        WKCastle = true;
+        BQCastle = true;
+        BKCastle = true;
     }
 
     public ChessGame(ChessBoard board, TeamColor team) {
@@ -71,7 +80,16 @@ public class ChessGame {
                 validMoves.add(move);
             }
         }
+        validMoves.addAll(castlingMoves(piece, startPosition));
         return validMoves;
+    }
+
+    private Collection<ChessMove> castlingMoves(ChessPiece piece, ChessPosition startPosition) {
+        if (piece.getPieceType() != ChessPiece.PieceType.KING) {
+            return new HashSet<>();
+        }
+        Collection<ChessMove> castlingMoves = new HashSet<>();
+        return castlingMoves;
     }
 
     /**
