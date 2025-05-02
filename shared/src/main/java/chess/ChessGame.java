@@ -92,7 +92,22 @@ public class ChessGame {
         if (piece.getPieceType() != ChessPiece.PieceType.PAWN) {
             return null;
         }
+        int row = startPosition.getRow();
+        int col = startPosition.getColumn();
+        ChessPiece opposingPawn = new ChessPiece(getOpposingColor(piece.getTeamColor()), ChessPiece.PieceType.PAWN);
+        if (piece.getTeamColor() == TeamColor.WHITE && row == 5) {
+            ChessPosition leftPosition = new ChessPosition(row, col - 1);
+
+        } else if (piece.getTeamColor() == TeamColor.BLACK && row == 4) {
+
+        }
         return null;
+    }
+
+    private boolean canEnPassant(ChessPiece opposingPawn, ChessPosition oppPawnPosition) {
+        return prevMove.getEndPosition().equals(oppPawnPosition)
+                && this.board.getPiece(oppPawnPosition).equals(opposingPawn)
+                && prevMove.getStartPosition().equals(new ChessPosition(oppPawnPosition.getRow() + 2, oppPawnPosition.getColumn()));
     }
 
     private Collection<ChessMove> castlingMoves(Collection<ChessMove> validMoves, ChessPosition startPosition, ChessPiece piece, TeamColor pieceColor) {
