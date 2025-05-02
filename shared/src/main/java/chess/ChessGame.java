@@ -80,15 +80,38 @@ public class ChessGame {
                 validMoves.add(move);
             }
         }
-        validMoves.addAll(castlingMoves(piece, startPosition));
+        validMoves.addAll(castlingMoves(validMoves, startPosition, piece, pieceColor));
         return validMoves;
     }
 
-    private Collection<ChessMove> castlingMoves(ChessPiece piece, ChessPosition startPosition) {
+    private Collection<ChessMove> castlingMoves(Collection<ChessMove> validMoves, ChessPosition startPosition, ChessPiece piece, TeamColor pieceColor) {
         if (piece.getPieceType() != ChessPiece.PieceType.KING) {
             return new HashSet<>();
         }
         Collection<ChessMove> castlingMoves = new HashSet<>();
+        //int kingRow = pieceColor == TeamColor.WHITE ? 1 : 8;
+        switch (pieceColor) {
+            case WHITE:
+                if (WKCastle) {
+                    if (validMoves.contains(new ChessMove(startPosition, new ChessPosition(1, 6), null)) && validMoves(new ChessPosition(1, 8)).contains(new ChessMove(new ChessPosition(1, 8), new ChessPosition(1, 6), null))) {
+                        ChessGame checkGame = new ChessGame(this.board, this.teamTurn);
+                        ChessMove castlingMove = new ChessMove(startPosition, new ChessPosition(1, 7), null);
+                        checkGame.forceMoveWithoutTeamTurn(castlingMove);
+                        if (checkGame.isInCheck(pieceColor)) {
+                            castlingMoves.add(castlingMove);
+                        }
+                    }
+                }
+                if (WQCastle) {
+
+                }
+                break;
+            case BLACK:
+
+                break;
+            default:
+                throw new AssertionError();
+        }
         return castlingMoves;
     }
 
