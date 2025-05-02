@@ -20,14 +20,17 @@ public class ChessGame {
     boolean BQCastle;
     boolean BKCastle;
 
+    ChessMove prevMove;
+
     public ChessGame() {
         this.board = new ChessBoard();
         this.board.resetBoard();
         this.teamTurn = TeamColor.WHITE;
-        WQCastle = true;
-        WKCastle = true;
-        BQCastle = true;
-        BKCastle = true;
+        this.WQCastle = true;
+        this.WKCastle = true;
+        this.BQCastle = true;
+        this.BKCastle = true;
+        this.prevMove = null;
     }
 
     public ChessGame(ChessBoard board, TeamColor team) {
@@ -81,7 +84,15 @@ public class ChessGame {
             }
         }
         validMoves.addAll(castlingMoves(validMoves, startPosition, piece, pieceColor));
+        validMoves.add(addEnPassantMove(startPosition, piece, pieceColor));
         return validMoves;
+    }
+
+    private ChessMove addEnPassantMove(ChessPosition startPosition, ChessPiece piece, TeamColor pieceColor) {
+        if (piece.getPieceType() != ChessPiece.PieceType.PAWN) {
+            return null;
+        }
+        return null;
     }
 
     private Collection<ChessMove> castlingMoves(Collection<ChessMove> validMoves, ChessPosition startPosition, ChessPiece piece, TeamColor pieceColor) {
@@ -144,6 +155,7 @@ public class ChessGame {
             throw new InvalidMoveException("Piece can't go there");
         }
         movePiece(move);
+        this.prevMove = move;
         switch (teamTurn) {
             case WHITE:
                 this.teamTurn = TeamColor.BLACK;
@@ -186,7 +198,17 @@ public class ChessGame {
 
     private void checkCastling(ChessPiece piece, ChessMove move) {
         if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-
+            noLongerCastle(piece.getTeamColor());
+        } else if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
+            if (piece.getTeamColor() == TeamColor.WHITE && move.getStartPosition().equals(new ChessPosition(1, 1))) {
+                this.WQCastle = false;
+            } else if (piece.getTeamColor() == TeamColor.WHITE && move.getStartPosition().equals(new ChessPosition(1, 8))) {
+                this.WKCastle = false;
+            } else if (piece.getTeamColor() == TeamColor.WHITE && move.getStartPosition().equals(new ChessPosition(8, 1))) {
+                this.BQCastle = false;
+            } else if (piece.getTeamColor() == TeamColor.WHITE && move.getStartPosition().equals(new ChessPosition(8, 8))) {
+                this.BKCastle = false;
+            }
         }
     }
 
