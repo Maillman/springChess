@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -52,6 +53,52 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         this.teamTurn = team;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + Objects.hashCode(this.board);
+        hash = 53 * hash + Objects.hashCode(this.teamTurn);
+        hash = 53 * hash + (this.WQCastle ? 1 : 0);
+        hash = 53 * hash + (this.WKCastle ? 1 : 0);
+        hash = 53 * hash + (this.BQCastle ? 1 : 0);
+        hash = 53 * hash + (this.BKCastle ? 1 : 0);
+        hash = 53 * hash + Objects.hashCode(this.prevMove);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ChessGame other = (ChessGame) obj;
+        if (this.WQCastle != other.WQCastle) {
+            return false;
+        }
+        if (this.WKCastle != other.WKCastle) {
+            return false;
+        }
+        if (this.BQCastle != other.BQCastle) {
+            return false;
+        }
+        if (this.BKCastle != other.BKCastle) {
+            return false;
+        }
+        if (!Objects.equals(this.board, other.board)) {
+            return false;
+        }
+        if (this.teamTurn != other.teamTurn) {
+            return false;
+        }
+        return Objects.equals(this.prevMove, other.prevMove);
     }
 
     /**
