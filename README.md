@@ -54,3 +54,5 @@ java -jar client/target/client-jar-with-dependencies.jar
 ## Time for 100+CodeQuality%:
 Phase # - hour:minute:second
 Phase 0 - 2:30:23
+Phase 1 - Phase 0 + 1:30:49
+Phase 1 Extra Credit - Phase 0 + 3:45:05
