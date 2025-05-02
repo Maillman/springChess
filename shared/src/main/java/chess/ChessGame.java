@@ -22,7 +22,7 @@ public class ChessGame {
     }
 
     public ChessGame(ChessBoard board, TeamColor team) {
-        this.board = board;
+        this.board = new ChessBoard(board);
         this.teamTurn = team;
     }
 
@@ -58,7 +58,12 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        if (board.getPiece(startPosition) == null) {
+            return new HashSet<>();
+        }
+        TeamColor pieceColor = board.getPiece(startPosition).getTeamColor();
+        Collection<ChessMove> validMoves = new HashSet<>();
+        return validMoves;
     }
 
     /**
@@ -109,13 +114,17 @@ public class ChessGame {
 
     private Collection<ChessMove> allValidMovesForColor(TeamColor teamColor) {
         Collection<ChessMove> allValidMoves = allMovesForColor(teamColor);
+        Collection<ChessMove> movesToRemove = new HashSet<>();
         for (ChessMove move : allValidMoves) {
             //If the move still yields isInCheck, remove the move from the list
             ChessGame checkGame = new ChessGame(this.board, this.teamTurn);
             checkGame.forceMoveWithoutTeamTurn(move);
             if (checkGame.isInCheck(teamColor)) {
-                allValidMoves.remove(move);
+                movesToRemove.add(move);
             }
+        }
+        for (ChessMove move : movesToRemove) {
+            allValidMoves.remove(move);
         }
         return allValidMoves;
     }
@@ -157,8 +166,9 @@ public class ChessGame {
         if (!isInCheck(teamColor)) {
             return false;
         }
-        //Do some things for isInCheckmate
-        return false;
+        //Checkmate means that the current team has no possible valid moves.
+        Collection<ChessMove> allValidMoves = allValidMovesForColor(teamColor);
+        return allValidMoves.isEmpty();
     }
 
     /**
@@ -173,8 +183,8 @@ public class ChessGame {
             return false;
         }
         //Stalemate means that the current team has no possible moves.
-        Collection<ChessMove> allMoves = allValidMovesForColor(teamColor);
-        return allMoves.isEmpty();
+        Collection<ChessMove> allValidMoves = allValidMovesForColor(teamColor);
+        return allValidMoves.isEmpty();
     }
 
     /**
