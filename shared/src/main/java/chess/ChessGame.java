@@ -91,23 +91,23 @@ public class ChessGame {
         Collection<ChessMove> castlingMoves = new HashSet<>();
         //int kingRow = pieceColor == TeamColor.WHITE ? 1 : 8;
         switch (pieceColor) {
-            case WHITE:
+            case WHITE -> {
                 if (WKCastle) {
                     addCastlingMove(validMoves, startPosition, new ChessPosition(1, 6), new ChessPosition(1, 7), new ChessPosition(1, 8), pieceColor, castlingMoves);
                 }
                 if (WQCastle) {
                     addCastlingMove(validMoves, startPosition, new ChessPosition(1, 4), new ChessPosition(1, 3), new ChessPosition(1, 1), pieceColor, castlingMoves);
                 }
-                break;
-            case BLACK:
+            }
+            case BLACK -> {
                 if (BKCastle) {
                     addCastlingMove(validMoves, startPosition, new ChessPosition(8, 6), new ChessPosition(8, 7), new ChessPosition(8, 8), pieceColor, castlingMoves);
                 }
                 if (BQCastle) {
                     addCastlingMove(validMoves, startPosition, new ChessPosition(8, 4), new ChessPosition(8, 3), new ChessPosition(8, 1), pieceColor, castlingMoves);
                 }
-                break;
-            default:
+            }
+            default ->
                 throw new AssertionError();
         }
         return castlingMoves;
@@ -117,7 +117,7 @@ public class ChessGame {
         if (validMoves.contains(new ChessMove(startPosition, towardCastlePosition, null)) && validMoves(rookPosition).contains(new ChessMove(rookPosition, towardCastlePosition, null))) {
             ChessGame checkGame = new ChessGame(this.board, this.teamTurn);
             ChessMove castlingMove = new ChessMove(startPosition, castlePosition, null);
-            checkGame.forceMoveWithoutTeamTurn(castlingMove);
+            checkGame.forceMovePiece(castlingMove);
             if (!checkGame.isInCheck(pieceColor)) {
                 castlingMoves.add(castlingMove);
             }
@@ -143,7 +143,7 @@ public class ChessGame {
         if (!validMoves.contains(move)) {
             throw new InvalidMoveException("Piece can't go there");
         }
-        forceMoveWithoutTeamTurn(move);
+        movePiece(move);
         switch (teamTurn) {
             case WHITE:
                 this.teamTurn = TeamColor.BLACK;
@@ -156,7 +156,19 @@ public class ChessGame {
         }
     }
 
-    public void forceMoveWithoutTeamTurn(ChessMove move) {
+    private void movePiece(ChessMove move) {
+        ChessPiece piece = this.board.getPiece(move.getStartPosition());
+        if (piece == null) {
+            return;
+        }
+        if (isCastlingMove(piece, move)) {
+            handleCastlingMove(move);
+        } else {
+            forceMovePiece(move);
+        }
+    }
+
+    public void forceMovePiece(ChessMove move) {
         ChessPiece piece = this.board.getPiece(move.getStartPosition());
         if (piece == null) {
             return;
@@ -168,6 +180,17 @@ public class ChessGame {
             this.board.addPiece(move.getEndPosition(), piece);
         }
         this.board.addPiece(move.getStartPosition(), null);
+    }
+
+    private void handleCastlingMove(ChessMove move) {
+
+    }
+
+    private boolean isCastlingMove(ChessPiece piece, ChessMove move) {
+        if (piece.getPieceType() != ChessPiece.PieceType.KING) {
+            return false;
+        }
+        return !piece.pieceMoves(this.board, move.getStartPosition()).contains(move);
     }
 
     /**
@@ -207,7 +230,7 @@ public class ChessGame {
         for (ChessMove move : allValidMoves) {
             //If the move still yields isInCheck, remove the move from the list
             ChessGame checkGame = new ChessGame(this.board, this.teamTurn);
-            checkGame.forceMoveWithoutTeamTurn(move);
+            checkGame.forceMovePiece(move);
             if (checkGame.isInCheck(teamColor)) {
                 movesToRemove.add(move);
             }
