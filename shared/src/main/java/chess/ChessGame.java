@@ -95,19 +95,25 @@ public class ChessGame {
         int row = startPosition.getRow();
         int col = startPosition.getColumn();
         ChessPiece opposingPawn = new ChessPiece(getOpposingColor(piece.getTeamColor()), ChessPiece.PieceType.PAWN);
-        if (piece.getTeamColor() == TeamColor.WHITE && row == 5) {
+        if (piece.getTeamColor() == TeamColor.WHITE && row == 5 ||
+        piece.getTeamColor() == TeamColor.BLACK && row == 4) {
+            int forward = piece.getTeamColor() == TeamColor.WHITE ? 1 : -1;
             ChessPosition leftPosition = new ChessPosition(row, col - 1);
-
-        } else if (piece.getTeamColor() == TeamColor.BLACK && row == 4) {
-
+            if(canEnPassant(opposingPawn, leftPosition, forward)){
+                return new ChessMove(startPosition, new ChessPosition(startPosition.getRow()+forward, leftPosition.getColumn()), null);
+            }
+            ChessPosition rightPosition = new ChessPosition(row, col + 1);
+            if(canEnPassant(opposingPawn, rightPosition, forward)){
+                return new ChessMove(startPosition, new ChessPosition(startPosition.getRow()+forward, rightPosition.getColumn()), null);
+            }
         }
         return null;
     }
 
-    private boolean canEnPassant(ChessPiece opposingPawn, ChessPosition oppPawnPosition) {
+    private boolean canEnPassant(ChessPiece opposingPawn, ChessPosition oppPawnPosition, int forward) {
         return prevMove.getEndPosition().equals(oppPawnPosition)
                 && this.board.getPiece(oppPawnPosition).equals(opposingPawn)
-                && prevMove.getStartPosition().equals(new ChessPosition(oppPawnPosition.getRow() + 2, oppPawnPosition.getColumn()));
+                && prevMove.getStartPosition().equals(new ChessPosition(oppPawnPosition.getRow() + forward * 2, oppPawnPosition.getColumn()));
     }
 
     private Collection<ChessMove> castlingMoves(Collection<ChessMove> validMoves, ChessPosition startPosition, ChessPiece piece, TeamColor pieceColor) {
