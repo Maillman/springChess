@@ -21,6 +21,11 @@ public class ChessGame {
         this.teamTurn = TeamColor.WHITE;
     }
 
+    public ChessGame(ChessBoard board, TeamColor team) {
+        this.board = board;
+        this.teamTurn = team;
+    }
+
     /**
      * @return Which team's turn it is
      */
@@ -66,6 +71,11 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
+    public void forceMoveWithoutTeamTurn(ChessMove move) {
+        this.board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+        this.board.addPiece(move.getStartPosition(), null);
+    }
+
     /**
      * Determines if the given team is in check
      *
@@ -95,6 +105,19 @@ public class ChessGame {
             default ->
                 TeamColor.WHITE;
         };
+    }
+
+    private Collection<ChessMove> allValidMovesForColor(TeamColor teamColor) {
+        Collection<ChessMove> allValidMoves = allMovesForColor(teamColor);
+        for (ChessMove move : allValidMoves) {
+            //If the move still yields isInCheck, remove the move from the list
+            ChessGame checkGame = new ChessGame(this.board, this.teamTurn);
+            checkGame.forceMoveWithoutTeamTurn(move);
+            if (checkGame.isInCheck(teamColor)) {
+                allValidMoves.remove(move);
+            }
+        }
+        return allValidMoves;
     }
 
     private Collection<ChessMove> allMovesForColor(TeamColor teamColor) {
@@ -149,9 +172,9 @@ public class ChessGame {
         if (isInCheck(teamColor)) {
             return false;
         }
-        //Do some things for isInStalemate
         //Stalemate means that the current team has no possible moves.
-        return false;
+        Collection<ChessMove> allMoves = allValidMovesForColor(teamColor);
+        return allMoves.isEmpty();
     }
 
     /**
