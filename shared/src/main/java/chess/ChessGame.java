@@ -163,8 +163,10 @@ public class ChessGame {
         }
         if (isCastlingMove(piece, move)) {
             handleCastlingMove(move);
+            noLongerCastle(piece.getTeamColor());
         } else {
             forceMovePiece(move);
+            checkCastling(piece, move);
         }
     }
 
@@ -182,8 +184,43 @@ public class ChessGame {
         this.board.addPiece(move.getStartPosition(), null);
     }
 
-    private void handleCastlingMove(ChessMove move) {
+    private void checkCastling(ChessPiece piece, ChessMove move) {
+        if (piece.getPieceType() == ChessPiece.PieceType.KING) {
 
+        }
+    }
+
+    private void handleCastlingMove(ChessMove move) {
+        ChessPosition kingEndPosition = move.getEndPosition();
+        int castlingRow = kingEndPosition.getRow();
+        ChessPosition rookStartPosition;
+        ChessPosition rookEndPosition;
+        if (kingEndPosition.getColumn() == 3) { //QueenSide
+            rookStartPosition = new ChessPosition(castlingRow, 1);
+            rookEndPosition = new ChessPosition(castlingRow, 4);
+        } else { //KingSide
+            rookStartPosition = new ChessPosition(castlingRow, 8);
+            rookEndPosition = new ChessPosition(castlingRow, 6);
+
+        }
+        ChessMove moveRook = new ChessMove(rookStartPosition, rookEndPosition, null);
+        forceMovePiece(move);
+        forceMovePiece(moveRook);
+    }
+
+    private void noLongerCastle(TeamColor teamColor) {
+        switch (teamColor) {
+            case WHITE -> {
+                this.WKCastle = false;
+                this.WQCastle = false;
+            }
+            case BLACK -> {
+                this.BKCastle = false;
+                this.BQCastle = false;
+            }
+            default ->
+                throw new AssertionError();
+        }
     }
 
     private boolean isCastlingMove(ChessPiece piece, ChessMove move) {
