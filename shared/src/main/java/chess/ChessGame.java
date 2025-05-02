@@ -84,11 +84,14 @@ public class ChessGame {
             }
         }
         validMoves.addAll(castlingMoves(validMoves, startPosition, piece, pieceColor));
-        validMoves.add(addEnPassantMove(startPosition, piece, pieceColor));
+        ChessMove enPassantMove = enPassantMove(startPosition, piece, pieceColor);
+        if(enPassantMove!=null){
+            validMoves.add(enPassantMove);
+        }
         return validMoves;
     }
 
-    private ChessMove addEnPassantMove(ChessPosition startPosition, ChessPiece piece, TeamColor pieceColor) {
+    private ChessMove enPassantMove(ChessPosition startPosition, ChessPiece piece, TeamColor pieceColor) {
         if (piece.getPieceType() != ChessPiece.PieceType.PAWN) {
             return null;
         }
@@ -197,6 +200,8 @@ public class ChessGame {
         if (isCastlingMove(piece, move)) {
             handleCastlingMove(move);
             noLongerCastle(piece.getTeamColor());
+        } else if (isEnPassantMove(piece, move)){
+            handleEnPassantMove(move);
         } else {
             forceMovePiece(move);
             checkCastling(piece, move);
@@ -215,6 +220,19 @@ public class ChessGame {
             this.board.addPiece(move.getEndPosition(), piece);
         }
         this.board.addPiece(move.getStartPosition(), null);
+    }
+
+    private void handleEnPassantMove(ChessMove move) {
+        ChessPosition capturedPosition = new ChessPosition(move.getStartPosition().getRow(), move.getEndPosition().getColumn());
+        forceMovePiece(move);
+        this.board.addPiece(capturedPosition, null);
+    }
+
+    private boolean isEnPassantMove(ChessPiece piece, ChessMove move) {
+        if (piece.getPieceType() != ChessPiece.PieceType.PAWN) {
+            return false;
+        }
+        return !piece.pieceMoves(this.board, move.getStartPosition()).contains(move);
     }
 
     private void checkCastling(ChessPiece piece, ChessMove move) {
