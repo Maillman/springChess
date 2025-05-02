@@ -75,16 +75,8 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) {
         //Loop through all the pieces of the opposing color, get all the moves.
         //Find the king for our given color and see if any of the moves end at that spot.
-        Collection<ChessMove> allOpposingMoves = new HashSet<>();
-        for (int i = 1; i <= 8; i++) {
-            for (int j = 1; j <= 8; j++) {
-                ChessPosition curChessPosition = new ChessPosition(i, j);
-                ChessPiece curChessPiece = this.board.getPiece(curChessPosition);
-                if (curChessPiece != null && curChessPiece.getTeamColor() != teamColor) {
-                    allOpposingMoves.addAll(curChessPiece.pieceMoves(this.board, curChessPosition));
-                }
-            }
-        }
+        TeamColor oppColor = getOpposingColor(teamColor);
+        Collection<ChessMove> allOpposingMoves = allMovesForColor(oppColor);
         ChessPosition kingPosition = getKingPosition(teamColor);
         for (ChessMove move : allOpposingMoves) {
             if (move.getEndPosition().equals(kingPosition)) {
@@ -92,6 +84,31 @@ public class ChessGame {
             }
         }
         return false;
+    }
+
+    private TeamColor getOpposingColor(TeamColor teamColor) {
+        return switch (teamColor) {
+            case WHITE ->
+                TeamColor.BLACK;
+            case BLACK ->
+                TeamColor.WHITE;
+            default ->
+                TeamColor.WHITE;
+        };
+    }
+
+    private Collection<ChessMove> allMovesForColor(TeamColor teamColor) {
+        Collection<ChessMove> allMoves = new HashSet<>();
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition curChessPosition = new ChessPosition(i, j);
+                ChessPiece curChessPiece = this.board.getPiece(curChessPosition);
+                if (curChessPiece != null && curChessPiece.getTeamColor() == teamColor) {
+                    allMoves.addAll(curChessPiece.pieceMoves(this.board, curChessPosition));
+                }
+            }
+        }
+        return allMoves;
     }
 
     private ChessPosition getKingPosition(TeamColor teamColor) {
@@ -114,7 +131,11 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (!isInCheck(teamColor)) {
+            return false;
+        }
+        //Do some things for isInCheckmate
+        return false;
     }
 
     /**
@@ -125,7 +146,12 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor)) {
+            return false;
+        }
+        //Do some things for isInStalemate
+        //Stalemate means that the current team has no possible moves.
+        return false;
     }
 
     /**
@@ -134,7 +160,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -143,6 +169,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return this.board;
     }
 }
