@@ -8,6 +8,7 @@ import dataaccess.UserDAO;
 import dataaccess.memory.MemoryAuthDAO;
 import dataaccess.memory.MemoryGameDAO;
 import dataaccess.memory.MemoryUserDAO;
+import model.AuthData;
 import model.UserData;
 import service.ClearService;
 import service.GameService;
@@ -19,6 +20,7 @@ public class Handler {
     private final UserService userService;
     private final GameService gameService;
     private final ClearService clearService;
+    private Gson serializer;
 
     public Handler() {
         UserDAO userDAO = new MemoryUserDAO();
@@ -27,10 +29,13 @@ public class Handler {
         this.userService = new UserService(userDAO, authDAO);
         this.gameService = new GameService(userDAO, authDAO, gameDAO);
         this.clearService = new ClearService(userDAO, authDAO, gameDAO);
+        this.serializer = new Gson();
     }
 
     public Object register(Request req, Response res) {
-        UserData user = new Gson().fromJson(req.body(), UserData.class);
+        UserData user = serializer.fromJson(req.body(), UserData.class);
+        AuthData auth = userService.register(user);
+        return serializer.toJson(auth);
     }
 
     public Object login(Request req, Response res) {
