@@ -68,7 +68,7 @@ public class Handler {
         return serializer.toJson(joinData);
     }
 
-    public Object joinGame(Request req, Response res) {
+    public Object joinGame(Request req, Response res) throws DataAccessException {
         String authToken = req.headers("authorization");
         JoinData join = serializer.fromJson(req.body(), JoinData.class);
         this.gameService.joinGame(authToken, join);

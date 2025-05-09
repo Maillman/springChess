@@ -14,6 +14,11 @@ public class MemoryGameDAO implements GameDAO {
     private int id = 0;
 
     @Override
+    public GameData getGame(int gameID) {
+        return this.games.get(gameID);
+    }
+
+    @Override
     public ListGamesData getAllGames() {
         Collection<GameData> lGames = this.games.values();
         return new ListGamesData(lGames);
@@ -25,6 +30,11 @@ public class MemoryGameDAO implements GameDAO {
         GameData game = new GameData(id, null, null, gameName, new ChessGame());
         games.put(id, game);
         return id;
+    }
+    
+    @Override
+    public void updateGame(GameData updatedGame) {
+        this.games.put(updatedGame.gameID(), updatedGame);
     }
 
     @Override
