@@ -38,6 +38,9 @@ public class GameService {
         if(game==null){
             throw new DataAccessException("Error: game doesn't exist", 400);
         }
+        if(join.playerColor()==null){
+            throw new DataAccessException("Error: player color not chosen", 400);
+        }
         GameData updatedGame;
         switch (join.playerColor()) {
             case "WHITE" -> {
@@ -50,7 +53,7 @@ public class GameService {
                 if(game.blackUsername()!=null){
                     throw new DataAccessException("Error: Player color already taken", 403);
                 }
-                updatedGame = new GameData(game.gameID(), game.blackUsername(), authData.username(), game.gameName(), game.game());
+                updatedGame = new GameData(game.gameID(), game.whiteUsername(), authData.username(), game.gameName(), game.game());
             }
             default -> throw new DataAccessException("Error: invalid player color", 400);
         }
