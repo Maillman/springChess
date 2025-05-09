@@ -39,10 +39,10 @@ public class Handler {
         return serializer.toJson(auth);
     }
 
-    public Object login(Request req, Response res) {
-        Object placeholder = "Remove this line";
-
-        return placeholder;
+    public Object login(Request req, Response res) throws DataAccessException {
+        UserData user = serializer.fromJson(req.body(), UserData.class);
+        AuthData auth = userService.register(user);
+        return serializer.toJson(auth);
     }
 
     public Object logout(Request req, Response res) {
@@ -70,9 +70,8 @@ public class Handler {
     }
 
     public Object clear(Request req, Response res) {
-        Object placeholder = "Remove this line";
-
-        return placeholder;
+        clearService.clear();
+        return "{}";
     }
 
     public void handleException(DataAccessException ex, Request req, Response res) {

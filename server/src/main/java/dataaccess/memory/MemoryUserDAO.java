@@ -18,5 +18,10 @@ public class MemoryUserDAO implements UserDAO {
     public void addUser(UserData user) {
         users.put(user.username(), user);
     }
+
+    @Override
+    public void clearUsers() {
+        this.users.clear();
+    }
     
 }

@@ -8,4 +8,9 @@ import model.GameData;
 public class MemoryGameDAO implements GameDAO {
     
     private final HashMap<String, GameData> games = new HashMap<>();
+
+    @Override
+    public void clearGames() {
+        this.games.clear();
+    }
 }
