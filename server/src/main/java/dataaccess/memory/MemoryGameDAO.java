@@ -1,15 +1,23 @@
 package dataaccess.memory;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import chess.ChessGame;
 import dataaccess.GameDAO;
 import model.GameData;
+import model.ListGamesData;
 
 public class MemoryGameDAO implements GameDAO {
     
     private final HashMap<Integer, GameData> games = new HashMap<>();
     private int id = 0;
+
+    @Override
+    public ListGamesData getAllGames() {
+        Collection<GameData> lGames = this.games.values();
+        return new ListGamesData(lGames);
+    }
 
     @Override
     public int createGame(String gameName) {
@@ -22,5 +30,5 @@ public class MemoryGameDAO implements GameDAO {
     @Override
     public void clearGames() {
         this.games.clear();
-    }    
+    }
 }

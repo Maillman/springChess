@@ -11,6 +11,8 @@ import dataaccess.memory.MemoryGameDAO;
 import dataaccess.memory.MemoryUserDAO;
 import model.AuthData;
 import model.GameData;
+import model.JoinData;
+import model.ListGamesData;
 import model.UserData;
 import service.ClearService;
 import service.GameService;
@@ -52,23 +54,25 @@ public class Handler {
         return "{}";
     }
 
-    public Object listGames(Request req, Response res) {
-        Object placeholder = "Remove this line";
-
-        return placeholder;
+    public Object listGames(Request req, Response res) throws DataAccessException {
+        String authToken = req.headers("authorization");
+        ListGamesData games = gameService.listGames(authToken);
+        return serializer.toJson(games);
     }
 
     public Object createGame(Request req, Response res) throws DataAccessException {
         String authToken = req.headers("authorization");
         GameData game = serializer.fromJson(req.body(), GameData.class);
         int gameID = gameService.createGame(authToken, game.gameName());
-        return "{ \"gameID\": " + gameID + " }";
+        JoinData joinData = new JoinData(null, gameID);
+        return serializer.toJson(joinData);
     }
 
     public Object joinGame(Request req, Response res) {
-        Object placeholder = "Remove this line";
-
-        return placeholder;
+        String authToken = req.headers("authorization");
+        JoinData join = serializer.fromJson(req.body(), JoinData.class);
+        this.gameService.joinGame(authToken, join);
+        return "{}";
     }
 
     public Object clear(Request req, Response res) {
