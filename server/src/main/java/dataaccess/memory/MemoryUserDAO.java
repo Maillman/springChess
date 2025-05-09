@@ -1,18 +1,22 @@
 package dataaccess.memory;
 
+import java.util.HashMap;
+
 import dataaccess.UserDAO;
 import model.UserData;
 
 public class MemoryUserDAO implements UserDAO {
 
+    private final HashMap<String, UserData> users = new HashMap<>();
+
     @Override
     public UserData getUser(String username) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return users.get(username);
     }
 
     @Override
     public void addUser(UserData user) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        users.put(user.username(), user);
     }
     
 }

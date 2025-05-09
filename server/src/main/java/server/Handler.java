@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import dataaccess.memory.MemoryAuthDAO;
@@ -32,7 +33,7 @@ public class Handler {
         this.serializer = new Gson();
     }
 
-    public Object register(Request req, Response res) {
+    public Object register(Request req, Response res) throws DataAccessException {
         UserData user = serializer.fromJson(req.body(), UserData.class);
         AuthData auth = userService.register(user);
         return serializer.toJson(auth);
@@ -72,5 +73,10 @@ public class Handler {
         Object placeholder = "Remove this line";
 
         return placeholder;
+    }
+
+    public void handleException(DataAccessException ex, Request req, Response res) {
+        res.status(ex.statusCode());
+        res.body(serializer.toJson(ex));
     }
 }

@@ -17,6 +17,9 @@ public class UserService {
     }
 
     public AuthData register(UserData user) throws DataAccessException {
+        if(user.username()==null||user.password()==null||user.email()==null){
+            throw new DataAccessException("At least one field was empty, make sure all fields are filled", 400);
+        }
         //Make sure username isn't taken
         UserData existingUser = this.userDAO.getUser(user.username());
         if(existingUser!=null){

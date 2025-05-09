@@ -1,5 +1,6 @@
 package server;
 
+import dataaccess.DataAccessException;
 import spark.Spark;
 
 public class Server {
@@ -22,6 +23,7 @@ public class Server {
         Spark.post("/game", (req, res) -> handler.createGame(req, res));
         Spark.put("/game", (req, res) -> handler.joinGame(req, res));
         Spark.delete("/db", (req, res) -> handler.clear(req, res));
+        Spark.exception(DataAccessException.class, (ex, req, res) -> handler.handleException(ex, req, res));
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
