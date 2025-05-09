@@ -41,14 +41,14 @@ public class Handler {
 
     public Object login(Request req, Response res) throws DataAccessException {
         UserData user = serializer.fromJson(req.body(), UserData.class);
-        AuthData auth = userService.register(user);
+        AuthData auth = userService.login(user);
         return serializer.toJson(auth);
     }
 
-    public Object logout(Request req, Response res) {
-        Object placeholder = "Remove this line";
-
-        return placeholder;
+    public Object logout(Request req, Response res) throws DataAccessException {
+        String authToken = req.headers("authorization");
+        this.userService.logout(authToken);
+        return "{}";
     }
 
     public Object listGames(Request req, Response res) {

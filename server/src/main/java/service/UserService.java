@@ -40,9 +40,23 @@ public class UserService {
         if(existingUser==null){
             throw new DataAccessException("Error: Username doesn't exist", 401);
         }
+        if(!checkPassword(user.password(), existingUser.password())){
+            throw new DataAccessException("Error: Password incorrect", 401);
+        }
         AuthData authData = generateAuthData(user.username());
         this.authDAO.addAuth(authData);
         return authData;
+    }
+
+    public void logout(String authToken) throws DataAccessException {
+        if(this.authDAO.getAuth(authToken)==null){
+            throw new DataAccessException("Error: Invalid authtoken", 401);
+        }
+        this.authDAO.deleteAuth(authToken);
+    }
+
+    private boolean checkPassword(String providedPass, String existingPass) {
+        return providedPass.equals(existingPass);
     }
 
     private AuthData generateAuthData(String username) {
