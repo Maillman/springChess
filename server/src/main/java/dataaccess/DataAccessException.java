@@ -22,7 +22,7 @@ public class DataAccessException extends Exception{
         this.statusCode = statusCode;
     }
     public String toJson() {
-        return new Gson().toJson(Map.of("message", getMessage()));
+        return new Gson().toJson(Map.of("message", getMessage())); //Don't like that we are dependent on GSON...
     }
     public int statusCode() {
         return this.statusCode;

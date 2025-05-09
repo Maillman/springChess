@@ -21,7 +21,7 @@ public class Handler {
     private final UserService userService;
     private final GameService gameService;
     private final ClearService clearService;
-    private Gson serializer;
+    private final Gson serializer;
 
     public Handler() {
         UserDAO userDAO = new MemoryUserDAO();
@@ -77,6 +77,6 @@ public class Handler {
 
     public void handleException(DataAccessException ex, Request req, Response res) {
         res.status(ex.statusCode());
-        res.body(serializer.toJson(ex));
+        res.body(ex.toJson());
     }
 }
