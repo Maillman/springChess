@@ -12,6 +12,8 @@ import dataaccess.memory.MemoryAuthDAO;
 import dataaccess.memory.MemoryGameDAO;
 import dataaccess.memory.MemoryUserDAO;
 import model.AuthData;
+import model.JoinData;
+import model.ListGamesData;
 import model.UserData;
 
 public class ServiceTests {
@@ -66,5 +68,48 @@ public class ServiceTests {
     @Test
     void logoutFailure() {
         Assertions.assertThrows(DataAccessException.class, () -> userService.logout("badAuthtoken"));
+    }
+
+    @Test
+    void listGamesSuccess() {
+        Assertions.assertDoesNotThrow(() -> gameService.listGames(authData.authToken()));
+    }
+
+    @Test
+    void listGamesEmpty() throws DataAccessException {
+        ListGamesData listGames = gameService.listGames(authData.authToken());
+        Assertions.assertEquals(0, listGames.games().size());
+    }
+
+
+    @Test
+    void listGamesFailure() {
+        Assertions.assertThrows(DataAccessException.class, () -> gameService.listGames("badAuthtoken"));
+    }
+
+    @Test
+    void createGameSuccess() {
+        Assertions.assertDoesNotThrow(() -> gameService.createGame(authData.authToken(), "newGame"));
+    }
+
+    @Test
+    void createGameFailure() {
+        Assertions.assertThrows(DataAccessException.class, () -> gameService.createGame(authData.authToken(), null));
+    }
+
+    @Test
+    void joinGameSuccess() throws DataAccessException {
+        int gameID = gameService.createGame(authData.authToken(), "newGame");
+        Assertions.assertDoesNotThrow(() -> gameService.joinGame(authData.authToken(), new JoinData("WHITE", gameID)));
+    }
+
+    @Test
+    void joinGameFailure() {
+        Assertions.assertThrows(DataAccessException.class, () -> gameService.createGame(authData.authToken(), null));
+    }
+
+    @Test
+    void clearSuccess() throws DataAccessException {
+        Assertions.assertDoesNotThrow(() -> clearService.clear());
     }
 }
