@@ -16,10 +16,10 @@ public class ChessGame {
 
     TeamColor teamTurn;
 
-    boolean WQCastle;
-    boolean WKCastle;
-    boolean BQCastle;
-    boolean BKCastle;
+    boolean wqCastle;
+    boolean wkCastle;
+    boolean bqCastle;
+    boolean bkCastle;
 
     ChessMove prevMove;
 
@@ -27,10 +27,10 @@ public class ChessGame {
         this.board = new ChessBoard();
         this.board.resetBoard();
         this.teamTurn = TeamColor.WHITE;
-        this.WQCastle = true;
-        this.WKCastle = true;
-        this.BQCastle = true;
-        this.BKCastle = true;
+        this.wqCastle = true;
+        this.wkCastle = true;
+        this.bqCastle = true;
+        this.bkCastle = true;
         this.prevMove = null;
     }
 
@@ -60,10 +60,10 @@ public class ChessGame {
         int hash = 3;
         hash = 53 * hash + Objects.hashCode(this.board);
         hash = 53 * hash + Objects.hashCode(this.teamTurn);
-        hash = 53 * hash + (this.WQCastle ? 1 : 0);
-        hash = 53 * hash + (this.WKCastle ? 1 : 0);
-        hash = 53 * hash + (this.BQCastle ? 1 : 0);
-        hash = 53 * hash + (this.BKCastle ? 1 : 0);
+        hash = 53 * hash + (this.wqCastle ? 1 : 0);
+        hash = 53 * hash + (this.wkCastle ? 1 : 0);
+        hash = 53 * hash + (this.bqCastle ? 1 : 0);
+        hash = 53 * hash + (this.bkCastle ? 1 : 0);
         hash = 53 * hash + Objects.hashCode(this.prevMove);
         return hash;
     }
@@ -80,16 +80,16 @@ public class ChessGame {
             return false;
         }
         final ChessGame other = (ChessGame) obj;
-        if (this.WQCastle != other.WQCastle) {
+        if (this.wqCastle != other.wqCastle) {
             return false;
         }
-        if (this.WKCastle != other.WKCastle) {
+        if (this.wkCastle != other.wkCastle) {
             return false;
         }
-        if (this.BQCastle != other.BQCastle) {
+        if (this.bqCastle != other.bqCastle) {
             return false;
         }
-        if (this.BKCastle != other.BKCastle) {
+        if (this.bkCastle != other.bkCastle) {
             return false;
         }
         if (!Objects.equals(this.board, other.board)) {
@@ -166,7 +166,7 @@ public class ChessGame {
                 && prevMove.getStartPosition().equals(new ChessPosition(oppPawnPosition.getRow() + forward * 2, oppPawnPosition.getColumn()));
     }
 
-    private Collection<ChessMove> castlingMoves(Collection<ChessMove> validMoves, ChessPosition startPosition, ChessPiece piece, TeamColor pieceColor) {
+    private Collection<ChessMove> castlingMoves(Collection<ChessMove> validMoves, ChessPosition startPos, ChessPiece piece, TeamColor pieceColor) {
         if (piece.getPieceType() != ChessPiece.PieceType.KING) {
             return new HashSet<>();
         }
@@ -174,19 +174,27 @@ public class ChessGame {
         //int kingRow = pieceColor == TeamColor.WHITE ? 1 : 8;
         switch (pieceColor) {
             case WHITE -> {
-                if (WKCastle) {
-                    addCastlingMove(validMoves, startPosition, new ChessPosition(1, 6), new ChessPosition(1, 7), new ChessPosition(1, 8), pieceColor, castlingMoves);
+                if (wkCastle) {
+                    addCastlingMove(validMoves, startPos,
+                        new ChessPosition(1, 6), new ChessPosition(1, 7), new ChessPosition(1, 8),
+                        pieceColor, castlingMoves);
                 }
-                if (WQCastle) {
-                    addCastlingMove(validMoves, startPosition, new ChessPosition(1, 4), new ChessPosition(1, 3), new ChessPosition(1, 1), pieceColor, castlingMoves);
+                if (wqCastle) {
+                    addCastlingMove(validMoves, startPos,
+                    new ChessPosition(1, 4), new ChessPosition(1, 3), new ChessPosition(1, 1),
+                    pieceColor, castlingMoves);
                 }
             }
             case BLACK -> {
-                if (BKCastle) {
-                    addCastlingMove(validMoves, startPosition, new ChessPosition(8, 6), new ChessPosition(8, 7), new ChessPosition(8, 8), pieceColor, castlingMoves);
+                if (bkCastle) {
+                    addCastlingMove(validMoves, startPos,
+                    new ChessPosition(8, 6), new ChessPosition(8, 7), new ChessPosition(8, 8),
+                    pieceColor, castlingMoves);
                 }
-                if (BQCastle) {
-                    addCastlingMove(validMoves, startPosition, new ChessPosition(8, 4), new ChessPosition(8, 3), new ChessPosition(8, 1), pieceColor, castlingMoves);
+                if (bqCastle) {
+                    addCastlingMove(validMoves, startPos,
+                    new ChessPosition(8, 4), new ChessPosition(8, 3), new ChessPosition(8, 1),
+                    pieceColor, castlingMoves);
                 }
             }
             default ->
@@ -195,10 +203,10 @@ public class ChessGame {
         return castlingMoves;
     }
 
-    private void addCastlingMove(Collection<ChessMove> validMoves, ChessPosition startPosition, ChessPosition towardCastlePosition, ChessPosition castlePosition, ChessPosition rookPosition, TeamColor pieceColor, Collection<ChessMove> castlingMoves) {
-        if (validMoves.contains(new ChessMove(startPosition, towardCastlePosition, null)) && validMoves(rookPosition).contains(new ChessMove(rookPosition, towardCastlePosition, null))) {
+    private void addCastlingMove(Collection<ChessMove> validMoves, ChessPosition startPos, ChessPosition toCastlePos, ChessPosition castlePos, ChessPosition rookPos, TeamColor pieceColor, Collection<ChessMove> castlingMoves) {
+        if (validMoves.contains(new ChessMove(startPos, toCastlePos, null)) && validMoves(rookPos).contains(new ChessMove(rookPos, toCastlePos, null))) {
             ChessGame checkGame = new ChessGame(this.board, this.teamTurn);
-            ChessMove castlingMove = new ChessMove(startPosition, castlePosition, null);
+            ChessMove castlingMove = new ChessMove(startPos, castlePos, null);
             checkGame.forceMovePiece(castlingMove);
             if (!checkGame.isInCheck(pieceColor)) {
                 castlingMoves.add(castlingMove);
@@ -287,13 +295,13 @@ public class ChessGame {
             noLongerCastle(piece.getTeamColor());
         } else if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
             if (piece.getTeamColor() == TeamColor.WHITE && move.getStartPosition().equals(new ChessPosition(1, 1))) {
-                this.WQCastle = false;
+                this.wqCastle = false;
             } else if (piece.getTeamColor() == TeamColor.WHITE && move.getStartPosition().equals(new ChessPosition(1, 8))) {
-                this.WKCastle = false;
+                this.wkCastle = false;
             } else if (piece.getTeamColor() == TeamColor.WHITE && move.getStartPosition().equals(new ChessPosition(8, 1))) {
-                this.BQCastle = false;
+                this.bqCastle = false;
             } else if (piece.getTeamColor() == TeamColor.WHITE && move.getStartPosition().equals(new ChessPosition(8, 8))) {
-                this.BKCastle = false;
+                this.bkCastle = false;
             }
         }
     }
@@ -319,12 +327,12 @@ public class ChessGame {
     private void noLongerCastle(TeamColor teamColor) {
         switch (teamColor) {
             case WHITE -> {
-                this.WKCastle = false;
-                this.WQCastle = false;
+                this.wkCastle = false;
+                this.wqCastle = false;
             }
             case BLACK -> {
-                this.BKCastle = false;
-                this.BQCastle = false;
+                this.bkCastle = false;
+                this.bqCastle = false;
             }
             default ->
                 throw new AssertionError();

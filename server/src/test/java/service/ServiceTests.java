@@ -21,8 +21,8 @@ public class ServiceTests {
     private final GameService gameService;
     private final ClearService clearService;
 
-    private static final UserData existingUser = new UserData("existingUser", "existingPass", "existingEmail");
-    private static final UserData newUser = new UserData("newUser", "newPass", "newEmail");
+    private static final UserData EXISTING_USER = new UserData("existingUser", "existingPass", "existingEmail");
+    private static final UserData NEW_USER = new UserData("newUser", "newPass", "newEmail");
     private AuthData authData;
 
     public ServiceTests() {
@@ -37,27 +37,27 @@ public class ServiceTests {
     @BeforeEach
     void clear() throws DataAccessException {
         clearService.clear();
-        this.authData = userService.register(existingUser);
+        this.authData = userService.register(EXISTING_USER);
     }
 
     @Test
     void registerSuccess() {
-        Assertions.assertDoesNotThrow(() -> userService.register(newUser));
+        Assertions.assertDoesNotThrow(() -> userService.register(NEW_USER));
     }
 
     @Test
     void registerFailure() {
-        Assertions.assertThrows(DataAccessException.class, () -> userService.register(existingUser));
+        Assertions.assertThrows(DataAccessException.class, () -> userService.register(EXISTING_USER));
     }
 
     @Test
     void loginSuccess() {
-        Assertions.assertDoesNotThrow(() -> userService.login(existingUser));
+        Assertions.assertDoesNotThrow(() -> userService.login(EXISTING_USER));
     }
 
     @Test
     void loginFailure() {
-        Assertions.assertThrows(DataAccessException.class, () -> userService.login(newUser));
+        Assertions.assertThrows(DataAccessException.class, () -> userService.login(NEW_USER));
     }
 
     @Test

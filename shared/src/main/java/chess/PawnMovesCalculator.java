@@ -20,10 +20,12 @@ public class PawnMovesCalculator extends PieceMovesCalculator {
         }
     }
 
-    public void checkAndAddPosition(Collection<ChessMove> allMoves, ChessBoard board, ChessPosition myPosition, ChessPosition checkPosition, int row, boolean isCapture) {
+    public void checkAndAddPosition(Collection<ChessMove> allMoves, ChessBoard board,
+                ChessPosition myPosition, ChessPosition checkPosition, int row, boolean isCapture) {
         if (inBounds(checkPosition)
                 && (board.getPiece(checkPosition) == null && !isCapture
-                || board.getPiece(checkPosition) != null && board.getPiece(checkPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor() && isCapture)) {
+                || board.getPiece(checkPosition) != null && board.getPiece(checkPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()
+                && isCapture)) {
             if (row == 9 - startRow) {
                 allMoves.add(new ChessMove(myPosition, checkPosition, ChessPiece.PieceType.QUEEN));
                 allMoves.add(new ChessMove(myPosition, checkPosition, ChessPiece.PieceType.ROOK));
