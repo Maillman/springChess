@@ -203,8 +203,15 @@ public class ChessGame {
         return castlingMoves;
     }
 
-    private void addCastlingMove(Collection<ChessMove> validMoves, ChessPosition startPos, ChessPosition toCastlePos, ChessPosition castlePos, ChessPosition rookPos, TeamColor pieceColor, Collection<ChessMove> castlingMoves) {
-        if (validMoves.contains(new ChessMove(startPos, toCastlePos, null)) && validMoves(rookPos).contains(new ChessMove(rookPos, toCastlePos, null))) {
+    private void addCastlingMove(Collection<ChessMove> validMoves,
+                                 ChessPosition startPos,
+                                 ChessPosition toCastlePos,
+                                 ChessPosition castlePos,
+                                 ChessPosition rookPos,
+                                 TeamColor pieceColor,
+                                 Collection<ChessMove> castlingMoves) {
+        if (validMoves.contains(new ChessMove(startPos, toCastlePos, null)) &&
+        validMoves(rookPos).contains(new ChessMove(rookPos, toCastlePos, null))) {
             ChessGame checkGame = new ChessGame(this.board, this.teamTurn);
             ChessMove castlingMove = new ChessMove(startPos, castlePos, null);
             checkGame.forceMovePiece(castlingMove);
