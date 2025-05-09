@@ -10,6 +10,7 @@ import dataaccess.memory.MemoryAuthDAO;
 import dataaccess.memory.MemoryGameDAO;
 import dataaccess.memory.MemoryUserDAO;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import service.ClearService;
 import service.GameService;
@@ -57,10 +58,11 @@ public class Handler {
         return placeholder;
     }
 
-    public Object createGame(Request req, Response res) {
-        Object placeholder = "Remove this line";
-
-        return placeholder;
+    public Object createGame(Request req, Response res) throws DataAccessException {
+        String authToken = req.headers("authorization");
+        GameData game = serializer.fromJson(req.body(), GameData.class);
+        int gameID = gameService.createGame(authToken, game.gameName());
+        return "{ \"gameID\": " + gameID + " }";
     }
 
     public Object joinGame(Request req, Response res) {
