@@ -2,6 +2,8 @@ package service;
 
 import java.util.UUID;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
@@ -25,6 +27,9 @@ public class UserService {
         if(existingUser!=null){
             throw new DataAccessException("Error: User already exists", 403);
         }
+        //Hash password
+        String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+        UserData hashedUser = new UserData(user.username(), hashedPassword, user.email());
         //Register and authenticate them
         this.userDAO.addUser(user);
         AuthData authData = generateAuthData(user.username());
@@ -56,7 +61,7 @@ public class UserService {
     }
 
     private boolean checkPassword(String providedPass, String existingPass) {
-        return providedPass.equals(existingPass);
+        return BCrypt.checkpw(providedPass, existingPass);
     }
 
     private AuthData generateAuthData(String username) {
