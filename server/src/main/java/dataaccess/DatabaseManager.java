@@ -18,7 +18,7 @@ public class DatabaseManager {
         loadPropertiesFromResources();
     }
 
-    private static final String[] createStatements = {
+    private static final String[] CREATE_STATEMENTS = {
             """
             CREATE TABLE IF NOT EXISTS  users (
               `username` varchar(256) NOT NULL,
@@ -55,7 +55,7 @@ public class DatabaseManager {
              var preparedStatement = conn.prepareStatement(statement)) {
             preparedStatement.executeUpdate();
             conn.setCatalog(databaseName);
-            for (var createStatement : createStatements) {
+            for (var createStatement : CREATE_STATEMENTS) {
                 try (var preparedCreateStatement = conn.prepareStatement(createStatement)) {
                     preparedCreateStatement.executeUpdate();
                 }

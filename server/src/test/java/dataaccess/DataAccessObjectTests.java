@@ -125,7 +125,7 @@ public class DataAccessObjectTests {
 
     @Test
     void updateGameSuccess() throws DataAccessException {
-        GameData updatedGame = new GameData(existingGameID, "newWhiteUsername", existingGame.blackUsername(), existingGame.gameName(), existingGame.game());
+        GameData updatedGame = new GameData(existingGameID, "newWhite", existingGame.blackUsername(), existingGame.gameName(), existingGame.game());
         Assertions.assertDoesNotThrow(() -> gameDAO.updateGame(updatedGame));
     }
 
