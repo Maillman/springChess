@@ -8,6 +8,8 @@ import dataaccess.sql.SQLAuthDAO;
 import dataaccess.sql.SQLGameDAO;
 import dataaccess.sql.SQLUserDAO;
 import model.AuthData;
+import model.GameData;
+import model.ListGamesData;
 import model.UserData;
 
 public class DataAccessObjectTests {
@@ -16,6 +18,8 @@ public class DataAccessObjectTests {
     private final GameDAO gameDAO;
     private final UserData existingUser = new UserData("existingUser", "existingPass", "existingEmail");
     private final AuthData authData = new AuthData("R4ND0M-UU1D-STRING", "existingUser");
+    private int existingGameID;
+    private GameData existingGame;
 
     public DataAccessObjectTests() {
         this.userDAO = new SQLUserDAO();
@@ -30,6 +34,8 @@ public class DataAccessObjectTests {
         gameDAO.clearGames();
         userDAO.addUser(existingUser);
         authDAO.addAuth(authData);
+        existingGameID = gameDAO.createGame("existingGame");
+        existingGame = gameDAO.getGame(existingGameID);
     }
 
     @Test
@@ -92,5 +98,45 @@ public class DataAccessObjectTests {
     @Test
     void createGameFailure() throws DataAccessException {
         Assertions.assertThrows(DataAccessException.class, () -> gameDAO.createGame(null));
+    }
+
+    @Test
+    void getGameSuccess() throws DataAccessException {
+        Assertions.assertDoesNotThrow(() -> gameDAO.getGame(existingGameID));
+    }
+
+    @Test
+    void getGameFailure() throws DataAccessException {
+        GameData gameData = gameDAO.getGame(-1);
+        Assertions.assertEquals(null, gameData);
+    }
+
+    @Test
+    void getAllGamesSuccess() throws DataAccessException {
+        Assertions.assertDoesNotThrow(() -> gameDAO.getAllGames());
+    }
+
+    @Test
+    void getAllGamesFailure() throws DataAccessException {
+        gameDAO.clearGames();
+        ListGamesData allGamesData = gameDAO.getAllGames();
+        Assertions.assertEquals(0, allGamesData.games().size());
+    }
+
+    @Test
+    void updateGameSuccess() throws DataAccessException {
+        GameData updatedGame = new GameData(existingGameID, "newWhiteUsername", existingGame.blackUsername(), existingGame.gameName(), existingGame.game());
+        Assertions.assertDoesNotThrow(() -> gameDAO.updateGame(updatedGame));
+    }
+
+    @Test
+    void updateGameFailure() throws DataAccessException {
+        GameData updatedGame = new GameData(-1, "newWhiteUsername", existingGame.blackUsername(), existingGame.gameName(), existingGame.game());
+        Assertions.assertDoesNotThrow(() -> gameDAO.updateGame(updatedGame));
+    }
+
+    @Test
+    void clearGameSuccess() throws DataAccessException {
+        Assertions.assertDoesNotThrow(() -> gameDAO.clearGames());
     }
 }
