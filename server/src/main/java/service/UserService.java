@@ -31,7 +31,7 @@ public class UserService {
         String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
         UserData hashedUser = new UserData(user.username(), hashedPassword, user.email());
         //Register and authenticate them
-        this.userDAO.addUser(user);
+        this.userDAO.addUser(hashedUser);
         AuthData authData = generateAuthData(user.username());
         this.authDAO.addAuth(authData);
         return authData;
