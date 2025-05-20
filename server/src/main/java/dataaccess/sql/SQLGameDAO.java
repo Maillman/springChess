@@ -1,6 +1,8 @@
 package dataaccess.sql;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import java.util.Collection;
+import java.util.HashSet;
 
 import com.google.gson.Gson;
 
@@ -40,13 +42,34 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public ListGamesData getAllGames() throws DataAccessException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Collection<GameData> collGameData = new HashSet<>();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT * FROM games";
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    while(rs.next()) {
+                        int gameID = rs.getInt("game_id");
+                        String whiteUsername = rs.getString("white_username");
+                        String blackUsername = rs.getString("black_username");
+                        String gameName = rs.getString("game_name");
+                        String chessGameJSON = rs.getString("game");
+                        ChessGame game = new Gson().fromJson(chessGameJSON, ChessGame.class);
+                        GameData foundGame = new GameData(gameID, whiteUsername, blackUsername, gameName, game);
+                        collGameData.add(foundGame);
+                    }
+                }
+            }
+        } catch(Exception ex) {
+            System.out.println(ex);
+            throw new DataAccessException("Error getting user: " + ex.getMessage(), 500);
+        }
+        return new ListGamesData(collGameData);
     }
 
     @Override
     public int createGame(String gameName) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "INSERT INTO games (white_username, black_username, game_name, game) VALUES (?, ?, ?)";
+            var statement = "INSERT INTO games (white_username, black_username, game_name, game) VALUES (?, ?, ?, ?)";
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 ps.setString(1, null);
                 ps.setString(2, null);
@@ -69,7 +92,21 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public void updateGame(GameData updatedGame) throws DataAccessException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "UPDATE games SET white_username=?, black_username=?, game_name=?, game=? WHERE game_id=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, updatedGame.whiteUsername());
+                ps.setString(2, updatedGame.blackUsername());
+                ps.setString(3, updatedGame.gameName());
+                String jsonGame = new Gson().toJson(new ChessGame());
+                ps.setString(4, jsonGame);
+                ps.setInt(5, updatedGame.gameID());
+                ps.executeUpdate();
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+            throw new DataAccessException("Error creating user: " + ex.getMessage(), 500);
+        }
     }
 
     @Override
