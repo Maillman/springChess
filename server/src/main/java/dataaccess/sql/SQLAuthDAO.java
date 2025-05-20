@@ -1,5 +1,6 @@
 package dataaccess.sql;
 
+import dataaccess.DatabaseManager;
 import dataaccess.AuthDAO;
 import model.AuthData;
 
@@ -22,7 +23,14 @@ public class SQLAuthDAO implements AuthDAO {
 
     @Override
     public void clearAuths() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "TRUNCATE auths";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.executeUpdate();
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
     }
 
 }

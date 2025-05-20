@@ -29,11 +29,28 @@ public class SQLUserDAO implements UserDAO {
 
     @Override
     public void addUser(UserData user) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, user.username());
+                ps.setString(2, user.password());
+                ps.setString(3, user.email());
+                ps.executeUpdate();
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
     }
 
     @Override
     public void clearUsers() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "TRUNCATE users";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.executeUpdate();
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
     }
 }

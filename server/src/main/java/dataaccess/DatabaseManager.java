@@ -54,6 +54,7 @@ public class DatabaseManager {
         try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
              var preparedStatement = conn.prepareStatement(statement)) {
             preparedStatement.executeUpdate();
+            conn.setCatalog(databaseName);
             for (var createStatement : createStatements) {
                 try (var preparedCreateStatement = conn.prepareStatement(createStatement)) {
                     preparedCreateStatement.executeUpdate();

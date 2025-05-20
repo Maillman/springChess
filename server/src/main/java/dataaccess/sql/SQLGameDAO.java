@@ -1,5 +1,6 @@
 package dataaccess.sql;
 
+import dataaccess.DatabaseManager;
 import dataaccess.GameDAO;
 import model.GameData;
 import model.ListGamesData;
@@ -28,7 +29,14 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public void clearGames() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "TRUNCATE games";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.executeUpdate();
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
     }
     
 }
