@@ -1,19 +1,30 @@
 package dataaccess.sql;
 
-import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import dataaccess.UserDAO;
 import model.UserData;
 
 public class SQLUserDAO implements UserDAO {
 
-    public SQLUserDAO() throws DataAccessException {
-        configureDatabase();
-    }
-
     @Override
     public UserData getUser(String username) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT * FROM users WHERE username=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, username);
+                try (var rs = ps.executeQuery()) {
+                    if(rs.next()) {
+                        String password = rs.getString("password");
+                        String email = rs.getString("email");
+                        UserData foundUser = new UserData(username, password, email);
+                        return foundUser;
+                    }
+                }
+            }
+        } catch(Exception ex) {
+            System.out.println(ex);
+        }
+        return null;
     }
 
     @Override
@@ -25,9 +36,4 @@ public class SQLUserDAO implements UserDAO {
     public void clearUsers() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-    }
-    
 }

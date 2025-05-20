@@ -4,11 +4,15 @@ import com.google.gson.Gson;
 
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import dataaccess.memory.MemoryAuthDAO;
 import dataaccess.memory.MemoryGameDAO;
 import dataaccess.memory.MemoryUserDAO;
+import dataaccess.sql.SQLAuthDAO;
+import dataaccess.sql.SQLGameDAO;
+import dataaccess.sql.SQLUserDAO;
 import model.AuthData;
 import model.GameData;
 import model.JoinData;
@@ -27,9 +31,20 @@ public class Handler {
     private final Gson serializer;
 
     public Handler() {
-        UserDAO userDAO = new MemoryUserDAO();
-        AuthDAO authDAO = new MemoryAuthDAO();
-        GameDAO gameDAO = new MemoryGameDAO();
+        UserDAO userDAO;
+        AuthDAO authDAO;
+        GameDAO gameDAO;
+        try {
+            DatabaseManager.createDatabase();
+            userDAO = new SQLUserDAO();
+            authDAO = new SQLAuthDAO();
+            gameDAO = new SQLGameDAO();
+        } catch (DataAccessException e) {
+            System.out.println("An error occurred starting the database:" + e);
+            userDAO = new MemoryUserDAO();
+            authDAO = new MemoryAuthDAO();
+            gameDAO = new MemoryGameDAO();
+        }
         this.userService = new UserService(userDAO, authDAO);
         this.gameService = new GameService(userDAO, authDAO, gameDAO);
         this.clearService = new ClearService(userDAO, authDAO, gameDAO);
