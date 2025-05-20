@@ -1,5 +1,6 @@
 package dataaccess.sql;
 
+import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import dataaccess.UserDAO;
 import model.UserData;
@@ -7,7 +8,7 @@ import model.UserData;
 public class SQLUserDAO implements UserDAO {
 
     @Override
-    public UserData getUser(String username) {
+    public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM users WHERE username=?";
             try (var ps = conn.prepareStatement(statement)) {
@@ -23,12 +24,13 @@ public class SQLUserDAO implements UserDAO {
             }
         } catch(Exception ex) {
             System.out.println(ex);
+            throw new DataAccessException("Error getting user: " + ex.getMessage(), 500);
         }
         return null;
     }
 
     @Override
-    public void addUser(UserData user) {
+    public void addUser(UserData user) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
             try (var ps = conn.prepareStatement(statement)) {
@@ -39,11 +41,12 @@ public class SQLUserDAO implements UserDAO {
             }
         } catch (Exception ex) {
             System.out.println(ex);
+            throw new DataAccessException("Error creating user: " + ex.getMessage(), 500);
         }
     }
 
     @Override
-    public void clearUsers() {
+    public void clearUsers() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "TRUNCATE users";
             try (var ps = conn.prepareStatement(statement)) {
@@ -51,6 +54,7 @@ public class SQLUserDAO implements UserDAO {
             }
         } catch (Exception ex) {
             System.out.println(ex);
+            throw new DataAccessException("Error clearing users: " + ex.getMessage(), 500);
         }
     }
 }

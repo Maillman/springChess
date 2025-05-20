@@ -90,7 +90,7 @@ public class Handler {
         return "{}";
     }
 
-    public Object clear(Request req, Response res) {
+    public Object clear(Request req, Response res) throws DataAccessException {
         clearService.clear();
         return "{}";
     }
