@@ -1,0 +1,34 @@
+package dataaccess.sql;
+
+import dataaccess.GameDAO;
+import model.GameData;
+import model.ListGamesData;
+
+public class SQLGameDAO implements GameDAO {
+
+    @Override
+    public GameData getGame(int gameID) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ListGamesData getAllGames() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int createGame(String gameName) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void updateGame(GameData updatedGame) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void clearGames() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+}
