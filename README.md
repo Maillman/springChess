@@ -61,3 +61,4 @@ Phase # - hour:minute:second:
 - Phase 1 Extra Credit - Phase 0 + 3:45:05
 - Phase 2 - Phase 0 + Phase 1 + 0:19:52
 - Phase 3 - Phase 0 + Phase 1 + Phase 2 + 3:37:28
+- Phase 4 - Phase 0 + Phase 1 + Phase 2 + Phase 3 + 2:25:12
