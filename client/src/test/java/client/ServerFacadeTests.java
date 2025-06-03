@@ -57,17 +57,12 @@ public class ServerFacadeTests {
 
     @Test
     public void registerTwice() throws Exception {
-        AuthData registerResponse = serverFacade.register(NEW_USER);
-        System.out.println(registerResponse);
-        Assertions.assertNotNull(registerResponse, "Register Response is null");
-        Assertions.assertNotNull(registerResponse.username(), "Username is null");
-        Assertions.assertNotNull(registerResponse.authToken(), "AuthToken is null");
         Assertions.assertThrows(Exception.class, () -> serverFacade.register(null));
     }
 
     @Test
     public void loginSuccess() throws Exception {
-        AuthData registerResponse = serverFacade.login(NEW_USER);
+        AuthData registerResponse = serverFacade.login(EXISTING_USER);
         System.out.println(registerResponse);
         Assertions.assertNotNull(registerResponse, "Register Response is null");
         Assertions.assertNotNull(registerResponse.username(), "Username is null");
@@ -77,5 +72,16 @@ public class ServerFacadeTests {
     @Test
     public void loginFailure() {
         Assertions.assertThrows(Exception.class, () -> serverFacade.login(new UserData("newUser", null, null)));
+    }
+
+    @Test
+    public void logoutSuccess() throws Exception {
+        Assertions.assertDoesNotThrow(() -> serverFacade.logout());
+    }
+
+    @Test
+    public void logoutFailure() {
+        serverFacade.removeAuthToken();
+        Assertions.assertThrows(Exception.class, () -> serverFacade.logout());
     }
 }

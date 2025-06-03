@@ -12,6 +12,9 @@ import java.util.HashMap;
 import com.google.gson.Gson;
 
 import model.AuthData;
+import model.GameData;
+import model.JoinData;
+import model.ListGamesData;
 import model.UserData;
 
 public class ServerFacade {
@@ -30,8 +33,29 @@ public class ServerFacade {
         return handleAuthorization("/session", userData);
     }
 
+    public void logout() throws Exception {
+        makeRequest("DELETE", "/session", null, null);
+        removeAuthToken();
+    }
+
+    public ListGamesData list() throws Exception {
+        return makeRequest("GET", "/game", null, ListGamesData.class);
+    }
+
+    public JoinData create(GameData newGame) throws Exception {
+        return makeRequest("POST", "/game", newGame, JoinData.class);
+    }
+
+    public void join(JoinData join) throws Exception {
+        makeRequest("PUT", "/game", join, null);
+    }
+
     public void clear() throws Exception {
         makeRequest("DELETE", "/db", null, null);
+    }
+
+    public void removeAuthToken() {
+        this.authToken = null;
     }
 
     private AuthData handleAuthorization(String path, UserData userData) throws Exception {
