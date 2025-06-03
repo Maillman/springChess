@@ -23,11 +23,15 @@ public class ServerFacade {
     }
 
     public AuthData register(UserData userData) throws Exception {
-        return handleAuthorization("user", userData);
+        return handleAuthorization("/user", userData);
     }
 
     public AuthData login(UserData userData) throws Exception {
         return handleAuthorization("/session", userData);
+    }
+
+    public void clear() throws Exception {
+        makeRequest("DELETE", "/db", null, null);
     }
 
     private AuthData handleAuthorization(String path, UserData userData) throws Exception {
