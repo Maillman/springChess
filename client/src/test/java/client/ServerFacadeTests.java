@@ -130,9 +130,9 @@ public class ServerFacadeTests {
         JoinData joiningGameBadColor = new JoinData("GREEN", createdGame.gameID());
         JoinData joiningGameBadId = new JoinData("WHITE", -1);
         JoinData joiningGame = new JoinData("WHITE", createdGame.gameID());
-        Assertions.assertDoesNotThrow(() -> serverFacade.join(joiningGameBadColor));
-        Assertions.assertDoesNotThrow(() -> serverFacade.join(joiningGameBadId));
+        Assertions.assertThrows(Exception.class, () -> serverFacade.join(joiningGameBadColor));
+        Assertions.assertThrows(Exception.class, () -> serverFacade.join(joiningGameBadId));
         serverFacade.removeAuthToken();
-        Assertions.assertDoesNotThrow(() -> serverFacade.join(joiningGame));
+        Assertions.assertThrows(Exception.class, () -> serverFacade.join(joiningGame));
     }
 }
