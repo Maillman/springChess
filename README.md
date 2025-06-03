@@ -59,6 +59,7 @@ Phase # - hour:minute:second:
 - Phase 0 - 2:30:23
 - Phase 1 - Phase 0 + 1:30:49
 - Phase 1 Extra Credit - Phase 0 + 3:45:05
-- Phase 2 - Phase 0 + Phase 1 + 0:19:52
-- Phase 3 - Phase 0 + Phase 1 + Phase 2 + 3:37:28
-- Phase 4 - Phase 0 + Phase 1 + Phase 2 + Phase 3 + 2:25:12
+- Phase 2 - Phase 0 + Phase 1(EC) + 0:19:52
+- Phase 3 - Phase 0 + Phase 1(EC) + Phase 2 + 3:37:28
+- Phase 4 - Phase 0 + Phase 1(EC) + Phase 2 + Phase 3 + 2:25:12
+- Phase 5 Autograder - Phase 0 + Phase 1(EC) + Phase 2 + Phase 3 + Phase 4 + 2:06:43
