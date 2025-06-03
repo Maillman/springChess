@@ -11,6 +11,7 @@ import server.Server;
 public class ServerFacadeTests {
 
     private static Server server;
+    private static ServerFacade serverFacade;
 
     @BeforeAll
     public static void init() {
@@ -26,7 +27,7 @@ public class ServerFacadeTests {
 
 
     @Test
-    public void sampleTest() {
+    public void registerSuccess() {
         Assertions.assertTrue(true);
     }
 

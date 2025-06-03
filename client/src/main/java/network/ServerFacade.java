@@ -11,21 +11,40 @@ import java.util.HashMap;
 
 import com.google.gson.Gson;
 
+import model.AuthData;
+import model.UserData;
+
 public class ServerFacade {
     private final String serverUrl;
+    private String authToken;
     public ServerFacade(String serverUrl) {
         this.serverUrl = serverUrl;
+        this.authToken = null;
     }
 
-    private <T> T makeRequest(String method, String path, String authToken, Object request, Class<T> responseClass) throws Exception {
+    public AuthData register(UserData userData) throws Exception {
+        return handleAuthorization("user", userData);
+    }
+
+    public AuthData login(UserData userData) throws Exception {
+        return handleAuthorization("/session", userData);
+    }
+
+    private AuthData handleAuthorization(String path, UserData userData) throws Exception {
+        AuthData authData = makeRequest("POST", path, userData, AuthData.class);
+        this.authToken = authData.authToken();
+        return authData;
+    }
+
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws Exception {
         URL url = (new URI(serverUrl + path)).toURL();
         HttpURLConnection http = (HttpURLConnection) url.openConnection();
         http.setRequestMethod(method);
         http.setDoOutput(true);
 
-        if(authToken!=null){
+        if(this.authToken!=null){
             //Write out a header
-            http.addRequestProperty("authorization", authToken);
+            http.addRequestProperty("authorization", this.authToken);
         }
 
         writeBody(request, http);
